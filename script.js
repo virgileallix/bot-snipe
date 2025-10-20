@@ -68,30 +68,22 @@ async function loadItems() {
         // Fetch ALL items from catalog (not just limited)
         const allItemsData = [];
 
-        // Try different query combinations
-        // Note: salesTypeFilter seems to cause 400 errors with the proxy
+        // Reduced queries to avoid rate limiting (429 errors)
         const queries = [
-            // Different accessory types
-            { category: 'Accessories', subcategory: 'Hair', sortType: 3, limit: 30 },
-            { category: 'Accessories', subcategory: 'Face', sortType: 3, limit: 30 },
-            { category: 'Accessories', subcategory: 'Neck', sortType: 3, limit: 30 },
-            { category: 'Accessories', subcategory: 'Shoulder', sortType: 3, limit: 30 },
-            { category: 'Accessories', subcategory: 'Back', sortType: 3, limit: 30 },
-            { category: 'Accessories', subcategory: 'Waist', sortType: 3, limit: 30 },
-            // Clothing
-            { category: 'Clothing', sortType: 3, limit: 30 },
-            // Try to get limiteds another way (without salesTypeFilter)
-            { category: 'Accessories', sortType: 2, limit: 30 }, // Sort by price (might show limiteds)
+            { category: 'Accessories', subcategory: 'Hair', sortType: 3, limit: 50 },
+            { category: 'Accessories', subcategory: 'Face', sortType: 3, limit: 50 },
+            { category: 'Clothing', sortType: 3, limit: 50 },
         ];
 
         console.log('Starting to fetch items...');
 
-        for (const params of queries) {
+        for (let i = 0; i < queries.length; i++) {
             try {
+                const params = queries[i];
                 const queryString = new URLSearchParams(params).toString();
                 const url = `${ROBLOX_API.CATALOG}?${queryString}`;
 
-                console.log('Fetching:', url);
+                console.log(`Fetching ${i + 1}/${queries.length}:`, url);
 
                 const response = await fetch(proxyRequest(url), {
                     method: 'GET',
@@ -101,6 +93,11 @@ async function loadItems() {
                 });
 
                 console.log('Response status:', response.status);
+
+                // Add delay between requests to avoid rate limiting
+                if (i < queries.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+                }
 
                 if (response.ok) {
                     const data = await response.json();
