@@ -1,6 +1,8 @@
 // Configuration
+// TODO: Replace with your Cloudflare Worker URL after deployment (see CLOUDFLARE_SETUP.md)
+const WORKER_URL = null; // Set to your worker URL: 'https://your-worker.workers.dev'
+
 const CORS_PROXY = 'https://corsproxy.io/?';
-const CORS_PROXY_ALT = 'https://api.allorigins.win/raw?url=';
 const ROBLOX_API = {
     CATALOG: 'https://catalog.roblox.com/v1/search/items',
     ECONOMY: 'https://economy.roblox.com/v2/assets',
@@ -8,14 +10,12 @@ const ROBLOX_API = {
     MARKETPLACE: 'https://apis.roblox.com/marketplace-items/v1/items/details'
 };
 
-// Helper function to add CORS proxy
-function proxify(url) {
+// Helper function to use worker or fallback to proxy
+function proxyRequest(url) {
+    if (WORKER_URL) {
+        return `${WORKER_URL}?url=${encodeURIComponent(url)}`;
+    }
     return CORS_PROXY + encodeURIComponent(url);
-}
-
-// Alternative proxy
-function proxifyAlt(url) {
-    return CORS_PROXY_ALT + encodeURIComponent(url);
 }
 
 // State
@@ -93,7 +93,7 @@ async function loadItems() {
 
                 console.log('Fetching:', url);
 
-                const response = await fetch(proxify(url), {
+                const response = await fetch(proxyRequest(url), {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json'
@@ -111,22 +111,11 @@ async function loadItems() {
                         const firstItem = data.data[0];
                         console.log('First item structure:', Object.keys(firstItem));
 
-                        // If data is incomplete, try alternative proxy
+                        // If data is incomplete, warn user
                         if (!firstItem.name && firstItem.id) {
-                            console.log('Data incomplete! Trying alternative proxy...');
-                            try {
-                                const altResponse = await fetch(proxifyAlt(url));
-                                if (altResponse.ok) {
-                                    const altData = await altResponse.json();
-                                    if (altData.data && altData.data[0]?.name) {
-                                        console.log('Alternative proxy works! Using that data.');
-                                        allItemsData.push(...altData.data);
-                                        continue; // Skip adding incomplete data
-                                    }
-                                }
-                            } catch (err) {
-                                console.warn('Alternative proxy also failed');
-                            }
+                            console.warn('⚠️ Data incomplete! The CORS proxy is corrupting API data.');
+                            console.warn('📝 Please deploy the Cloudflare Worker (see CLOUDFLARE_SETUP.md)');
+                            console.warn('   or check the repository for setup instructions.');
                         }
 
                         allItemsData.push(...data.data);
@@ -150,6 +139,11 @@ async function loadItems() {
 
         console.log('Unique items:', uniqueItems.length);
         console.log('Sample item data:', uniqueItems[0]);
+
+        // Check if data is incomplete and show warning
+        if (uniqueItems[0] && !uniqueItems[0].name) {
+            showError('⚠️ Données incomplètes: Le proxy CORS corrompt l\'API Roblox. Pour voir les noms, prix et images, déployez le Cloudflare Worker (voir CLOUDFLARE_SETUP.md sur GitHub).');
+        }
 
         // Fetch thumbnails properly
         const itemIds = uniqueItems.slice(0, 120).map(item => item.id);
