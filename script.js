@@ -1,9 +1,15 @@
 // Configuration
+const CORS_PROXY = 'https://corsproxy.io/?';
 const ROBLOX_API = {
     CATALOG: 'https://catalog.roblox.com/v1/search/items',
     ECONOMY: 'https://economy.roblox.com/v2/assets',
     THUMBNAIL: 'https://thumbnails.roblox.com/v1/assets'
 };
+
+// Helper function to add CORS proxy
+function proxify(url) {
+    return CORS_PROXY + encodeURIComponent(url);
+}
 
 // State
 let allItems = [];
@@ -50,7 +56,8 @@ async function loadItems() {
         const allItemsData = [];
 
         for (const category of categories) {
-            const response = await fetch(`${ROBLOX_API.CATALOG}?category=${category}&limit=120&sortType=3&sortAggregation=1`, {
+            const url = `${ROBLOX_API.CATALOG}?category=${category}&limit=120&sortType=3&sortAggregation=1`;
+            const response = await fetch(proxify(url), {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json'
@@ -132,7 +139,7 @@ async function fetchThumbnails(itemIds) {
                 format: 'Png'
             }));
 
-            const response = await fetch('https://thumbnails.roblox.com/v1/batch', {
+            const response = await fetch(proxify('https://thumbnails.roblox.com/v1/batch'), {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
