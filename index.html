@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Item Sniper - Monitor Limited Items</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🎯 Roblox Item Sniper</h1>
+            <p class="subtitle">Monitor and track Roblox limited items in real-time</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="filters">
+            <h2>Filtres</h2>
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label for="itemType">Type d'item:</label>
+                    <select id="itemType">
+                        <option value="all">Tous</option>
+                        <option value="limited">Limited</option>
+                        <option value="limitedU">Limited U</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="creatorType">Créateur:</label>
+                    <select id="creatorType">
+                        <option value="all">Tous</option>
+                        <option value="ugc">UGC (Utilisateurs)</option>
+                        <option value="roblox">Roblox Officiel</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="sortBy">Trier par:</label>
+                    <select id="sortBy">
+                        <option value="newest">Plus récents</option>
+                        <option value="recent">Récemment mis à jour</option>
+                        <option value="price-asc">Prix croissant</option>
+                        <option value="price-desc">Prix décroissant</option>
+                        <option value="rap-asc">RAP croissant</option>
+                        <option value="rap-desc">RAP décroissant</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="minPrice">Prix minimum:</label>
+                    <input type="number" id="minPrice" placeholder="0" min="0">
+                </div>
+
+                <div class="filter-group">
+                    <label for="maxPrice">Prix maximum:</label>
+                    <input type="number" id="maxPrice" placeholder="Illimité" min="0">
+                </div>
+
+                <div class="filter-group">
+                    <label for="minRAP">RAP minimum:</label>
+                    <input type="number" id="minRAP" placeholder="0" min="0">
+                </div>
+
+                <div class="filter-group">
+                    <label for="maxRAP">RAP maximum:</label>
+                    <input type="number" id="maxRAP" placeholder="Illimité" min="0">
+                </div>
+            </div>
+
+            <button id="applyFilters" class="btn-primary">Appliquer les filtres</button>
+            <button id="refreshItems" class="btn-secondary">Rafraîchir</button>
+        </section>
+
+        <section class="stats">
+            <div class="stat-card">
+                <h3>Items affichés</h3>
+                <p id="itemCount" class="stat-value">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Dernière mise à jour</h3>
+                <p id="lastUpdate" class="stat-value">-</p>
+            </div>
+        </section>
+
+        <section class="items-container">
+            <div id="loadingSpinner" class="loading">
+                <div class="spinner"></div>
+                <p>Chargement des items...</p>
+            </div>
+            <div id="itemsGrid" class="items-grid"></div>
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Roblox Item Sniper - Données fournies par l'API Roblox</p>
+            <p class="disclaimer">Ce site n'est pas affilié à Roblox Corporation</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
