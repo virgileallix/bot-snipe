@@ -61,6 +61,35 @@ async function handleRequest(request) {
 
     const data = await robloxResponse.json()
 
+    // If this is a catalog search and we only got IDs, fetch full details
+    if (targetUrl.includes('catalog.roblox.com/v1/search/items') && data.data) {
+      const enrichedData = []
+
+      // Fetch details for each item (in batches to avoid timeout)
+      for (const item of data.data.slice(0, 50)) { // Limit to 50 items to avoid timeout
+        try {
+          const detailsUrl = `https://economy.roblox.com/v2/assets/${item.id}/details`
+          const detailsResponse = await fetch(detailsUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+              'Accept': 'application/json'
+            }
+          })
+
+          if (detailsResponse.ok) {
+            const details = await detailsResponse.json()
+            enrichedData.push({ ...item, ...details })
+          } else {
+            enrichedData.push(item) // Keep original if details fail
+          }
+        } catch (err) {
+          enrichedData.push(item) // Keep original on error
+        }
+      }
+
+      data.data = enrichedData
+    }
+
     // Return with CORS headers
     return jsonResponse(data, robloxResponse.status)
 
