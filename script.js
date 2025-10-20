@@ -123,7 +123,7 @@ async function loadItems() {
                 createdAt: item.createdAt || new Date().toISOString(),
                 updatedAt: item.updatedAt || new Date().toISOString(),
                 rap: calculateMockRAP(item.price, item.lowestPrice),
-                thumbnail: thumbnailsMap[item.id] || `https://tr.rbxcdn.com/180DAY-${item.id}/150/150/Image/Png/noFilter`
+                thumbnail: thumbnailsMap[item.id] || `https://assetdelivery.roblox.com/v1/asset/?id=${item.id}`
             };
         });
 
@@ -141,41 +141,16 @@ async function loadItems() {
 
 /**
  * Fetch thumbnails from Roblox API
+ * Using direct CDN URLs instead of batch API to avoid CORS issues
  */
 async function fetchThumbnails(itemIds) {
     try {
         const thumbnailsMap = {};
 
-        // Split into batches of 100 (API limit)
-        const batchSize = 100;
-        for (let i = 0; i < itemIds.length; i += batchSize) {
-            const batch = itemIds.slice(i, i + batchSize);
-            const requests = batch.map(id => ({
-                requestId: id.toString(),
-                type: 'Asset',
-                targetId: id,
-                size: '150x150',
-                format: 'Png'
-            }));
-
-            const response = await fetch(proxify('https://thumbnails.roblox.com/v1/batch'), {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requests)
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                data.data.forEach(thumb => {
-                    if (thumb.imageUrl) {
-                        thumbnailsMap[thumb.targetId] = thumb.imageUrl;
-                    }
-                });
-            }
-        }
+        // Use Roblox CDN directly for thumbnails
+        itemIds.forEach(id => {
+            thumbnailsMap[id] = `https://assetdelivery.roblox.com/v1/asset/?id=${id}`;
+        });
 
         return thumbnailsMap;
     } catch (error) {
@@ -296,7 +271,7 @@ function createItemCard(item) {
     const creatorBadge = item.isUGC ? '<span class="badge ugc-badge">UGC</span>' : item.isRoblox ? '<span class="badge roblox-badge">Roblox</span>' : '';
 
     card.innerHTML = `
-        <img src="${item.thumbnail}" alt="${item.name}" class="item-image" onerror="this.src='https://via.placeholder.com/200x200/1e1e1e/ffffff?text=No+Image'">
+        <img src="${item.thumbnail}" alt="${item.name}" class="item-image" onerror="this.style.display='none'">
         <div class="badges">
             <div class="item-type ${itemTypeClass}">${itemTypeText}</div>
             ${creatorBadge}
