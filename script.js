@@ -1,14 +1,21 @@
 // Configuration
 const CORS_PROXY = 'https://corsproxy.io/?';
+const CORS_PROXY_ALT = 'https://api.allorigins.win/raw?url=';
 const ROBLOX_API = {
     CATALOG: 'https://catalog.roblox.com/v1/search/items',
     ECONOMY: 'https://economy.roblox.com/v2/assets',
-    THUMBNAIL: 'https://thumbnails.roblox.com/v1/assets'
+    THUMBNAIL: 'https://thumbnails.roblox.com/v1/assets',
+    MARKETPLACE: 'https://apis.roblox.com/marketplace-items/v1/items/details'
 };
 
 // Helper function to add CORS proxy
 function proxify(url) {
     return CORS_PROXY + encodeURIComponent(url);
+}
+
+// Alternative proxy
+function proxifyAlt(url) {
+    return CORS_PROXY_ALT + encodeURIComponent(url);
 }
 
 // State
@@ -100,6 +107,28 @@ async function loadItems() {
                     console.log('Items received:', data.data?.length || 0);
 
                     if (data.data && data.data.length > 0) {
+                        // Check if we have complete data
+                        const firstItem = data.data[0];
+                        console.log('First item structure:', Object.keys(firstItem));
+
+                        // If data is incomplete, try alternative proxy
+                        if (!firstItem.name && firstItem.id) {
+                            console.log('Data incomplete! Trying alternative proxy...');
+                            try {
+                                const altResponse = await fetch(proxifyAlt(url));
+                                if (altResponse.ok) {
+                                    const altData = await altResponse.json();
+                                    if (altData.data && altData.data[0]?.name) {
+                                        console.log('Alternative proxy works! Using that data.');
+                                        allItemsData.push(...altData.data);
+                                        continue; // Skip adding incomplete data
+                                    }
+                                }
+                            } catch (err) {
+                                console.warn('Alternative proxy also failed');
+                            }
+                        }
+
                         allItemsData.push(...data.data);
                     }
                 } else {
