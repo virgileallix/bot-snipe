@@ -234,6 +234,11 @@ header h1 {
     color: white;
 }
 
+.item-type.normal {
+    background-color: var(--primary-color);
+    color: white;
+}
+
 .ugc-badge {
     background: linear-gradient(135deg, #00c853, #00a040);
     color: white;

@@ -23,6 +23,7 @@ const itemCount = document.getElementById('itemCount');
 const lastUpdate = document.getElementById('lastUpdate');
 
 // Filter Elements
+const categoryFilter = document.getElementById('category');
 const itemTypeFilter = document.getElementById('itemType');
 const creatorTypeFilter = document.getElementById('creatorType');
 const sortByFilter = document.getElementById('sortBy');
@@ -51,23 +52,39 @@ async function loadItems() {
     hideError();
 
     try {
-        // Fetch multiple categories to get more items including UGC
-        const categories = ['Accessories', 'All'];
+        // Fetch ALL items from catalog (not just limited)
         const allItemsData = [];
 
-        for (const category of categories) {
-            const url = `${ROBLOX_API.CATALOG}?category=${category}&limit=120&sortType=3&sortAggregation=1`;
-            const response = await fetch(proxify(url), {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
+        // Fetch with different parameters to get both limited and normal items
+        const queries = [
+            'category=All&limit=120&sortType=3',  // Newest items
+            'category=Accessories&limit=120&sortType=3',  // Accessories
+            'category=All&limit=120&salesTypeFilter=1',  // Limited items
+        ];
 
-            if (response.ok) {
-                const data = await response.json();
-                allItemsData.push(...data.data);
+        for (const query of queries) {
+            try {
+                const url = `${ROBLOX_API.CATALOG}?${query}`;
+                const response = await fetch(proxify(url), {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.data && data.data.length > 0) {
+                        allItemsData.push(...data.data);
+                    }
+                }
+            } catch (err) {
+                console.warn('Failed to fetch with query:', query, err);
             }
+        }
+
+        if (allItemsData.length === 0) {
+            throw new Error('Aucun item trouvé. Vérifiez votre connexion.');
         }
 
         // Remove duplicates based on ID
@@ -83,6 +100,7 @@ async function loadItems() {
             const isLimitedU = item.itemRestrictions?.includes('LimitedUnique') || false;
             const isUGC = item.creatorType === 'User' || item.creatorType === 'Group';
             const isRoblox = item.creatorType === 'Roblox' || item.creatorName === 'Roblox';
+            const isNormal = !isLimited && !isLimitedU;
 
             return {
                 id: item.id,
@@ -97,6 +115,7 @@ async function loadItems() {
                 itemRestrictions: item.itemRestrictions || [],
                 isLimited: isLimited,
                 isLimitedU: isLimitedU,
+                isNormal: isNormal,
                 isUGC: isUGC,
                 isRoblox: isRoblox,
                 lowestPrice: item.lowestPrice || item.price || 0,
@@ -191,12 +210,14 @@ function applyFilters() {
     // Filter items
     filteredItems = allItems.filter(item => {
         // Type filter
+        if (itemType === 'normal' && !item.isNormal) return false;
         if (itemType === 'limited' && !item.isLimited) return false;
         if (itemType === 'limitedU' && !item.isLimitedU) return false;
 
         // Creator type filter
         if (creatorType === 'ugc' && !item.isUGC) return false;
         if (creatorType === 'roblox' && !item.isRoblox) return false;
+        if (creatorType === 'roblox-limited' && !(item.isRoblox && (item.isLimited || item.isLimitedU))) return false;
 
         // Price filter
         if (item.price < minPrice || item.price > maxPrice) return false;
@@ -270,8 +291,8 @@ function createItemCard(item) {
     const card = document.createElement('div');
     card.className = 'item-card';
 
-    const itemTypeClass = item.isLimited ? 'limited' : item.isLimitedU ? 'limitedU' : '';
-    const itemTypeText = item.isLimited ? 'Limited' : item.isLimitedU ? 'Limited U' : 'Item';
+    const itemTypeClass = item.isLimited ? 'limited' : item.isLimitedU ? 'limitedU' : 'normal';
+    const itemTypeText = item.isLimited ? 'Limited' : item.isLimitedU ? 'Limited U' : 'Normal';
     const creatorBadge = item.isUGC ? '<span class="badge ugc-badge">UGC</span>' : item.isRoblox ? '<span class="badge roblox-badge">Roblox</span>' : '';
 
     card.innerHTML = `
@@ -286,10 +307,12 @@ function createItemCard(item) {
                 <span class="info-label">Prix:</span>
                 <span class="info-value price-value">${formatRobux(item.price)}</span>
             </div>
+            ${(item.isLimited || item.isLimitedU) ? `
             <div class="info-row">
                 <span class="info-label">RAP:</span>
                 <span class="info-value">${formatRobux(item.rap)}</span>
             </div>
+            ` : ''}
             ${item.isLimitedU ? `
             <div class="info-row">
                 <span class="info-label">Stock:</span>

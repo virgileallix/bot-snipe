@@ -19,11 +19,23 @@
             <h2>Filtres</h2>
             <div class="filter-grid">
                 <div class="filter-group">
+                    <label for="category">Catégorie:</label>
+                    <select id="category">
+                        <option value="all">Tout le catalogue</option>
+                        <option value="accessories">Accessoires</option>
+                        <option value="clothing">Vêtements</option>
+                        <option value="body-parts">Parties du corps</option>
+                        <option value="gear">Gear</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
                     <label for="itemType">Type d'item:</label>
                     <select id="itemType">
-                        <option value="all">Tous</option>
-                        <option value="limited">Limited</option>
-                        <option value="limitedU">Limited U</option>
+                        <option value="all">Tous (Normal + Limited)</option>
+                        <option value="normal">Items normaux uniquement</option>
+                        <option value="limited">Limited uniquement</option>
+                        <option value="limitedU">Limited U uniquement</option>
                     </select>
                 </div>
 
@@ -33,6 +45,7 @@
                         <option value="all">Tous</option>
                         <option value="ugc">UGC (Utilisateurs)</option>
                         <option value="roblox">Roblox Officiel</option>
+                        <option value="roblox-limited">Roblox Limited uniquement</option>
                     </select>
                 </div>
 
