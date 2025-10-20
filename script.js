@@ -115,6 +115,7 @@ async function loadItems() {
         const uniqueItems = Array.from(new Map(allItemsData.map(item => [item.id, item])).values());
 
         console.log('Unique items:', uniqueItems.length);
+        console.log('Sample item data:', uniqueItems[0]);
 
         // Fetch thumbnails properly
         const itemIds = uniqueItems.slice(0, 120).map(item => item.id);
@@ -128,16 +129,16 @@ async function loadItems() {
             const isRoblox = item.creatorType === 'Roblox' || item.creatorName === 'Roblox';
             const isNormal = !isLimited && !isLimitedU;
 
-            return {
+            const processedItem = {
                 id: item.id,
-                name: item.name,
-                price: item.price || 0,
+                name: item.name || 'Item sans nom',
+                price: item.price ?? 0,
                 premiumPrice: item.premiumPrice || null,
-                itemType: item.itemType,
-                assetType: item.assetType,
-                creatorName: item.creatorName,
-                creatorType: item.creatorType,
-                creatorId: item.creatorTargetId,
+                itemType: item.itemType || 'Unknown',
+                assetType: item.assetType || 'Unknown',
+                creatorName: item.creatorName || 'Créateur inconnu',
+                creatorType: item.creatorType || 'Unknown',
+                creatorId: item.creatorTargetId || 0,
                 itemRestrictions: item.itemRestrictions || [],
                 isLimited: isLimited,
                 isLimitedU: isLimitedU,
@@ -151,9 +152,12 @@ async function loadItems() {
                 rap: calculateMockRAP(item.price, item.lowestPrice),
                 thumbnail: thumbnailsMap[item.id] || `https://assetdelivery.roblox.com/v1/asset/?id=${item.id}`
             };
+
+            return processedItem;
         });
 
         console.log('Processed items:', allItems.length);
+        console.log('Sample processed item:', allItems[0]);
 
         filteredItems = [...allItems];
         applyFilters();
