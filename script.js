@@ -23,6 +23,7 @@ const itemCount = document.getElementById('itemCount');
 const lastUpdate = document.getElementById('lastUpdate');
 
 // Filter Elements
+const searchInput = document.getElementById('searchInput');
 const categoryFilter = document.getElementById('category');
 const itemTypeFilter = document.getElementById('itemType');
 const creatorTypeFilter = document.getElementById('creatorType');
@@ -42,6 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     applyFiltersBtn.addEventListener('click', applyFilters);
     refreshItemsBtn.addEventListener('click', loadItems);
+
+    // Search as you type
+    searchInput.addEventListener('input', () => {
+        applyFilters();
+    });
 });
 
 /**
@@ -55,16 +61,26 @@ async function loadItems() {
         // Fetch ALL items from catalog (not just limited)
         const allItemsData = [];
 
-        // Fetch with different parameters to get both limited and normal items
+        // Try different query combinations
         const queries = [
-            'category=All&limit=120&sortType=3',  // Newest items
-            'category=Accessories&limit=120&sortType=3',  // Accessories
-            'category=All&limit=120&salesTypeFilter=1',  // Limited items
+            // Limited items
+            { category: 'Accessories', subcategory: 'All', salesTypeFilter: 1, sortType: 3, limit: 30 },
+            { category: 'Accessories', subcategory: 'Hats', salesTypeFilter: 1, sortType: 3, limit: 30 },
+            // Normal items
+            { category: 'Accessories', subcategory: 'Hair', sortType: 3, limit: 30 },
+            { category: 'Accessories', subcategory: 'Face', sortType: 3, limit: 30 },
+            { category: 'Clothing', sortType: 3, limit: 30 },
         ];
 
-        for (const query of queries) {
+        console.log('Starting to fetch items...');
+
+        for (const params of queries) {
             try {
-                const url = `${ROBLOX_API.CATALOG}?${query}`;
+                const queryString = new URLSearchParams(params).toString();
+                const url = `${ROBLOX_API.CATALOG}?${queryString}`;
+
+                console.log('Fetching:', url);
+
                 const response = await fetch(proxify(url), {
                     method: 'GET',
                     headers: {
@@ -72,23 +88,33 @@ async function loadItems() {
                     }
                 });
 
+                console.log('Response status:', response.status);
+
                 if (response.ok) {
                     const data = await response.json();
+                    console.log('Items received:', data.data?.length || 0);
+
                     if (data.data && data.data.length > 0) {
                         allItemsData.push(...data.data);
                     }
+                } else {
+                    console.warn('Failed response:', response.status, response.statusText);
                 }
             } catch (err) {
-                console.warn('Failed to fetch with query:', query, err);
+                console.warn('Failed to fetch:', err);
             }
         }
 
+        console.log('Total items fetched:', allItemsData.length);
+
         if (allItemsData.length === 0) {
-            throw new Error('Aucun item trouvé. Vérifiez votre connexion.');
+            throw new Error('Aucun item trouvé. L\'API Roblox est peut-être inaccessible via le proxy.');
         }
 
         // Remove duplicates based on ID
         const uniqueItems = Array.from(new Map(allItemsData.map(item => [item.id, item])).values());
+
+        console.log('Unique items:', uniqueItems.length);
 
         // Fetch thumbnails properly
         const itemIds = uniqueItems.slice(0, 120).map(item => item.id);
@@ -126,6 +152,8 @@ async function loadItems() {
                 thumbnail: thumbnailsMap[item.id] || `https://assetdelivery.roblox.com/v1/asset/?id=${item.id}`
             };
         });
+
+        console.log('Processed items:', allItems.length);
 
         filteredItems = [...allItems];
         applyFilters();
@@ -174,6 +202,7 @@ function calculateMockRAP(price, lowestPrice) {
  * Apply filters to items
  */
 function applyFilters() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
     const itemType = itemTypeFilter.value;
     const creatorType = creatorTypeFilter.value;
     const sortBy = sortByFilter.value;
@@ -184,6 +213,11 @@ function applyFilters() {
 
     // Filter items
     filteredItems = allItems.filter(item => {
+        // Search filter
+        if (searchTerm && !item.name.toLowerCase().includes(searchTerm)) {
+            return false;
+        }
+
         // Type filter
         if (itemType === 'normal' && !item.isNormal) return false;
         if (itemType === 'limited' && !item.isLimited) return false;
