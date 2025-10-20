@@ -62,14 +62,19 @@ async function loadItems() {
         const allItemsData = [];
 
         // Try different query combinations
+        // Note: salesTypeFilter seems to cause 400 errors with the proxy
         const queries = [
-            // Limited items
-            { category: 'Accessories', subcategory: 'All', salesTypeFilter: 1, sortType: 3, limit: 30 },
-            { category: 'Accessories', subcategory: 'Hats', salesTypeFilter: 1, sortType: 3, limit: 30 },
-            // Normal items
+            // Different accessory types
             { category: 'Accessories', subcategory: 'Hair', sortType: 3, limit: 30 },
             { category: 'Accessories', subcategory: 'Face', sortType: 3, limit: 30 },
+            { category: 'Accessories', subcategory: 'Neck', sortType: 3, limit: 30 },
+            { category: 'Accessories', subcategory: 'Shoulder', sortType: 3, limit: 30 },
+            { category: 'Accessories', subcategory: 'Back', sortType: 3, limit: 30 },
+            { category: 'Accessories', subcategory: 'Waist', sortType: 3, limit: 30 },
+            // Clothing
             { category: 'Clothing', sortType: 3, limit: 30 },
+            // Try to get limiteds another way (without salesTypeFilter)
+            { category: 'Accessories', sortType: 2, limit: 30 }, // Sort by price (might show limiteds)
         ];
 
         console.log('Starting to fetch items...');
@@ -150,7 +155,7 @@ async function loadItems() {
                 createdAt: item.createdAt || new Date().toISOString(),
                 updatedAt: item.updatedAt || new Date().toISOString(),
                 rap: calculateMockRAP(item.price, item.lowestPrice),
-                thumbnail: thumbnailsMap[item.id] || `https://assetdelivery.roblox.com/v1/asset/?id=${item.id}`
+                thumbnail: thumbnailsMap[item.id] || `https://www.roblox.com/Thumbs/Asset.ashx?assetId=${item.id}&width=150&height=150`
             };
 
             return processedItem;
@@ -173,15 +178,16 @@ async function loadItems() {
 
 /**
  * Fetch thumbnails from Roblox API
- * Using direct CDN URLs instead of batch API to avoid CORS issues
+ * Using Roblox thumbnail URLs
  */
 async function fetchThumbnails(itemIds) {
     try {
         const thumbnailsMap = {};
 
-        // Use Roblox CDN directly for thumbnails
+        // Use Roblox thumbnail service
         itemIds.forEach(id => {
-            thumbnailsMap[id] = `https://assetdelivery.roblox.com/v1/asset/?id=${id}`;
+            // Try multiple thumbnail formats
+            thumbnailsMap[id] = `https://www.roblox.com/Thumbs/Asset.ashx?assetId=${id}&width=150&height=150`;
         });
 
         return thumbnailsMap;
