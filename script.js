@@ -1,6 +1,6 @@
 // Configuration
-// TODO: Replace with your Cloudflare Worker URL after deployment (see CLOUDFLARE_SETUP.md)
-const WORKER_URL = null; // Set to your worker URL: 'https://your-worker.workers.dev'
+// Cloudflare Worker URL for proxying Roblox API requests
+const WORKER_URL = 'https://ok.claudelemeilleurbts.workers.dev';
 
 const CORS_PROXY = 'https://corsproxy.io/?';
 const ROBLOX_API = {
