@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide de Progression Ultime | Anime Eternal Wiki</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 152, 0, 0.3);
+            transform: translateX(-5px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 2px solid #ff9800;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 152, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .section h2 {
+            color: #ff9800;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            color: #ffa500;
+            margin: 20px 0 10px 0;
+            font-size: 1.3rem;
+        }
+
+        .tip-box {
+            background: rgba(33, 150, 243, 0.1);
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .tip-box strong {
+            color: #2196f3;
+        }
+
+        .warning-box {
+            background: rgba(255, 152, 0, 0.1);
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .warning-box strong {
+            color: #ff9800;
+        }
+
+        .success-box {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .success-box strong {
+            color: #4caf50;
+        }
+
+        .progression-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progression-table th {
+            background: rgba(255, 152, 0, 0.3);
+            padding: 12px;
+            text-align: left;
+            color: #ff9800;
+            font-weight: bold;
+        }
+
+        .progression-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progression-table tr:hover {
+            background: rgba(255, 152, 0, 0.1);
+        }
+
+        .phase-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .phase-title {
+            font-size: 1.4rem;
+            color: #ff9800;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .phase-level {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            margin-left: 20px;
+            color: #ccc;
+        }
+
+        ul li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .priority-high {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .priority-medium {
+            color: #ff9800;
+            font-weight: bold;
+        }
+
+        .priority-low {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #ff9800;
+        }
+
+        .stat-title {
+            color: #ff9800;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .stat-desc {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Retour au wiki</a>
+
+        <header>
+            <h1>📈 Guide de Progression Ultime</h1>
+            <p style="font-size: 1.1rem; color: #ccc; margin-top: 10px;">
+                Tout ce que vous devez savoir pour progresser efficacement dans Anime Eternal
+            </p>
+        </header>
+
+        <div class="section">
+            <h2>🎯 Règles d'Or de la Progression</h2>
+            <div class="success-box">
+                <strong>✅ TOUJOURS FAIRE:</strong>
+                <ul>
+                    <li>Mettre 100% de vos points de stats dans l'ÉNERGIE</li>
+                    <li>Compléter 100% d'un monde avant de passer au suivant</li>
+                    <li>Farmer les donjons en mode Difficile quand possible</li>
+                    <li>Chercher et vaincre les boss secrets SS Rank</li>
+                    <li>Améliorer vos 3 meilleurs avatars en priorité</li>
+                </ul>
+            </div>
+            <div class="warning-box">
+                <strong>❌ NE JAMAIS FAIRE:</strong>
+                <ul>
+                    <li>Disperser vos points de stats dans plusieurs attributs</li>
+                    <li>Skip un monde sans l'avoir complété à 100%</li>
+                    <li>Ignorer les quêtes d'Obélisque</li>
+                    <li>Négliger l'amélioration de vos avatars</li>
+                    <li>Oublier de collecter les auras des boss secrets</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🚀 Phases de Progression</h2>
+
+            <div class="phase-card">
+                <div class="phase-title">Phase 1: Early Game (Niveaux 1-50)</div>
+                <div class="phase-level">Mondes 1-5 | Durée: ~2-4 heures</div>
+                <h3>Objectifs Principaux:</h3>
+                <ul>
+                    <li><span class="priority-high">PRIORITÉ MAX:</span> Compléter toutes les quêtes principales de chaque monde</li>
+                    <li><span class="priority-high">PRIORITÉ MAX:</span> Mettre TOUS les points de stats dans l'Énergie</li>
+                    <li><span class="priority-medium">Important:</span> Farmer les donjons pour obtenir des avatars (1% drop rate)</li>
+                    <li><span class="priority-medium">Important:</span> Collecter 5-10 avatars différents</li>
+                    <li><span class="priority-low">Optionnel:</span> Essayer de trouver les boss secrets</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>💡 Conseil Pro:</strong> Dans les mondes 1-3, concentrez-vous sur la vitesse. Complétez rapidement les quêtes pour débloquer les mondes suivants où les récompenses sont meilleures.
+                </div>
+            </div>
+
+            <div class="phase-card">
+                <div class="phase-title">Phase 2: Mid Game (Niveaux 50-150)</div>
+                <div class="phase-level">Mondes 6-15 | Durée: ~8-15 heures</div>
+                <h3>Objectifs Principaux:</h3>
+                <ul>
+                    <li><span class="priority-high">PRIORITÉ MAX:</span> Trouver et farmer les boss secrets SS Rank pour les auras</li>
+                    <li><span class="priority-high">PRIORITÉ MAX:</span> Améliorer vos 3 meilleurs avatars jusqu'au niveau 150</li>
+                    <li><span class="priority-medium">Important:</span> Débloquer le système Obélisque au Monde 10</li>
+                    <li><span class="priority-medium">Important:</span> Farmer les Obelisk Coins pour les buffs permanents</li>
+                    <li><span class="priority-medium">Important:</span> Participer aux Raids pour les récompenses spéciales</li>
+                    <li><span class="priority-low">Optionnel:</span> Collecter les tokens thématiques de chaque monde</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>💡 Conseil Pro:</strong> Le Monde 10 est crucial! Débloquez le système Obélisque qui donne des buffs PERMANENTS et EMPILABLES. Investissez massivement dans ce système.
+                </div>
+            </div>
+
+            <div class="phase-card">
+                <div class="phase-title">Phase 3: Late Game (Niveaux 150-250)</div>
+                <div class="phase-level">Mondes 16-24 | Durée: ~20-40 heures</div>
+                <h3>Objectifs Principaux:</h3>
+                <ul>
+                    <li><span class="priority-high">PRIORITÉ MAX:</span> Collecter TOUTES les auras des boss secrets</li>
+                    <li><span class="priority-high">PRIORITÉ MAX:</span> Maximiser les upgrades Obélisque</li>
+                    <li><span class="priority-high">PRIORITÉ MAX:</span> Débloquer le système Eminence (permanents)</li>
+                    <li><span class="priority-medium">Important:</span> Améliorer vos armes et équipements</li>
+                    <li><span class="priority-medium">Important:</span> Farmer les raids spéciaux (Halloween, Hollow, Dragon Room)</li>
+                    <li><span class="priority-low">Optionnel:</span> Collecter tous les avatars pour le 100%</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>💡 Conseil Pro:</strong> Les investissements Eminence sont PERMANENTS. Chaque amélioration vous profite pour toute votre progression future. Investissez agressivement!
+                </div>
+            </div>
+
+            <div class="phase-card">
+                <div class="phase-title">Phase 4: End Game (Niveau 250+)</div>
+                <div class="phase-level">Monde 24 & Raids | Durée: ∞</div>
+                <h3>Objectifs Principaux:</h3>
+                <ul>
+                    <li><span class="priority-high">PRIORITÉ MAX:</span> Farmer les raids de haut niveau (Hollow, Dragon Room)</li>
+                    <li><span class="priority-high">PRIORITÉ MAX:</span> Obtenir les avatars SSS Mythiques</li>
+                    <li><span class="priority-medium">Important:</span> Maximiser tous les systèmes de progression</li>
+                    <li><span class="priority-medium">Important:</span> Collecter les équipements légendaires</li>
+                    <li><span class="priority-low">Optionnel:</span> Viser le classement top 100</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚡ Systèmes de Progression Essentiels</h2>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-title">🔋 ÉNERGIE</div>
+                    <div class="stat-desc">
+                        Le stat le plus important! Détermine vos dégâts. Chaque avatar donne de l'énergie.
+                        <strong>Mettez 100% de vos points ici!</strong>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-title">👥 AVATARS</div>
+                    <div class="stat-desc">
+                        1% drop rate. Max niveau 150. +5% énergie par niveau.
+                        <strong>Focalisez 80% des Avatar Souls sur vos 3 meilleurs.</strong>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-title">✨ AURAS</div>
+                    <div class="stat-desc">
+                        1% drop des boss secrets SS Rank. Buffs puissants (Dégâts, XP, Drops).
+                        <strong>Priorité: Fire King, Leafy, Monster, Virtual, Hamon.</strong>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-title">🗿 OBÉLISQUE</div>
+                    <div class="stat-desc">
+                        Débloqué Monde 10. Buffs PERMANENTS et EMPILABLES.
+                        <strong>Investissez massivement ici!</strong>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-title">🌟 EMINENCE</div>
+                    <div class="stat-desc">
+                        Upgrades PERMANENTS disponibles tard. Chaque investissement = profit à vie.
+                        <strong>Ne skip jamais ces améliorations!</strong>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-title">⚔️ CHAMPIONS</div>
+                    <div class="stat-desc">
+                        Compagnons donnant des buffs. Obtenus avec des Stars.
+                        <strong>Même principe que les avatars: concentrez sur les meilleurs.</strong>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-title">🎯 GACHAS</div>
+                    <div class="stat-desc">
+                        Spins donnant des multiplicateurs. 1-2 par monde.
+                        <strong>Faites-les tous pour les boosts d'énergie!</strong>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-title">⚔️ DONJONS</div>
+                    <div class="stat-desc">
+                        50 salles, 3 difficultés. Meilleure source de XP et argent.
+                        <strong>Farmez en Difficile dès que possible!</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎮 Stratégies de Farm Efficaces</h2>
+
+            <h3>🏃 Speed Farm (Début de jeu)</h3>
+            <div class="tip-box">
+                <strong>Objectif:</strong> Progresser rapidement à travers les premiers mondes
+                <ul>
+                    <li>Complétez uniquement les quêtes principales</li>
+                    <li>Skip les donjons difficiles si vous êtes bloqué</li>
+                    <li>Objectif: Atteindre Monde 10 pour l'Obélisque le plus vite possible</li>
+                    <li>Utilisez les codes pour des boosts de XP et potions</li>
+                </ul>
+            </div>
+
+            <h3>💎 Quality Farm (Mi/Fin de jeu)</h3>
+            <div class="tip-box">
+                <strong>Objectif:</strong> Maximiser les récompenses et la progression à long terme
+                <ul>
+                    <li>100% complétion de chaque monde avant de continuer</li>
+                    <li>Trouvez TOUS les boss secrets pour les auras</li>
+                    <li>Farmez les donjons Difficile pour argent et Avatar Souls</li>
+                    <li>Participez à tous les raids disponibles</li>
+                    <li>Améliorez méthodiquement vos meilleurs avatars</li>
+                </ul>
+            </div>
+
+            <h3>🎃 Raid Farm (End Game)</h3>
+            <div class="tip-box">
+                <strong>Objectif:</strong> Obtenir les meilleures récompenses du jeu
+                <ul>
+                    <li><strong>Halloween Raid (Monde 1):</strong> Os colorés, bonbons, potions Flask</li>
+                    <li><strong>Hollow Raid (après Monde 20):</strong> Meilleur pour mid-game, combiné avec Green Planet</li>
+                    <li><strong>Dragon Room Raid:</strong> Storm Dragon Powers (l'une des meilleures abilities)</li>
+                    <li><strong>Relief Raid:</strong> Silver/Gold boxes pour matériaux de craft</li>
+                    <li>Améliorez votre Attack Range dans le lobby pour détruire tous les ennemis</li>
+                    <li>Stack les potions de luck et drop avec les macarons</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 Tableau de Progression Recommandée</h2>
+            <table class="progression-table">
+                <thead>
+                    <tr>
+                        <th>Niveau</th>
+                        <th>Mondes</th>
+                        <th>Focus Principal</th>
+                        <th>Objectif Clé</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1-10</td>
+                        <td>Monde 1</td>
+                        <td>Apprendre les mécaniques</td>
+                        <td>Compléter le tutoriel + 6 quêtes</td>
+                    </tr>
+                    <tr>
+                        <td>10-20</td>
+                        <td>Mondes 2-3</td>
+                        <td>Speed progression</td>
+                        <td>Débloquer plusieurs mondes rapidement</td>
+                    </tr>
+                    <tr>
+                        <td>20-50</td>
+                        <td>Mondes 4-6</td>
+                        <td>Collection d'avatars</td>
+                        <td>Obtenir 10-15 avatars variés</td>
+                    </tr>
+                    <tr>
+                        <td>50-100</td>
+                        <td>Mondes 7-10</td>
+                        <td>Débloquer Obélisque</td>
+                        <td>Atteindre M10 et investir dans Obélisque</td>
+                    </tr>
+                    <tr>
+                        <td>100-150</td>
+                        <td>Mondes 11-15</td>
+                        <td>Farm boss secrets</td>
+                        <td>Collecter toutes les auras SS Rank</td>
+                    </tr>
+                    <tr>
+                        <td>150-200</td>
+                        <td>Mondes 16-20</td>
+                        <td>Optimisation</td>
+                        <td>Améliorer avatars top 3 au max</td>
+                    </tr>
+                    <tr>
+                        <td>200-250</td>
+                        <td>Mondes 21-24</td>
+                        <td>End game content</td>
+                        <td>Débloquer système Eminence</td>
+                    </tr>
+                    <tr>
+                        <td>250+</td>
+                        <td>Raids</td>
+                        <td>Farm infini</td>
+                        <td>Avatars SSS Mythiques + Top 100</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>💡 Tips & Tricks Avancés</h2>
+
+            <div class="success-box">
+                <strong>🎯 Attack Range:</strong> L'upgrade la plus importante pour les raids! Améliorez-la dans le lobby du donjon, puis encore plus depuis Leaf Village (Monde 8). Permet de one-shot des vagues entières.
+            </div>
+
+            <div class="success-box">
+                <strong>👥 Jouer en Équipe:</strong> Teamez avec des amis pour clear les raids plus vite et grind plus de récompenses. La coopération accélère massiv ement la progression.
+            </div>
+
+            <div class="success-box">
+                <strong>🔄 Rank Up:</strong> Entre les quêtes et le gacha d'avatars au Monde 1, utilisez l'élément "Rank Up" régulièrement. Augmente votre puissance significativement.
+            </div>
+
+            <div class="success-box">
+                <strong>📦 Potions & Consumables:</strong> Stackez toujours les potions de luck et drop avec les macarons avant de farmer. La différence est énorme sur le long terme!
+            </div>
+
+            <div class="success-box">
+                <strong>⚔️ Placement Champions:</strong> Placez votre champion DPS le plus fort au centre pour une couverture maximale. Les supports doivent focus sur l'attack speed plutôt que raw damage.
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Ne pas gaspiller les clés:</strong> N'entrez jamais dans un donjon sous-préparé. Équipez vos meilleurs champions, améliorez vos avatars, et stackez les buffs AVANT d'utiliser une clé.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
