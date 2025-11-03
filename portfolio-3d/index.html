@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virgile Allix - Portfolio 3D Interactif</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        #info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 350px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+
+        #info-panel h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        #info-panel p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+
+        #controls h3 {
+            margin-bottom: 10px;
+            color: #00d4ff;
+            font-size: 16px;
+        }
+
+        #controls p {
+            font-size: 13px;
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .key {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 8px;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        #project-modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(10, 10, 30, 0.95);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            backdrop-filter: blur(20px);
+            border: 3px solid rgba(0, 212, 255, 0.5);
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.3);
+            z-index: 200;
+            transition: transform 0.3s ease;
+        }
+
+        #project-modal.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        #project-modal h2 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 28px;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        #project-modal .category {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        #project-modal .description {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        #project-modal .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        #project-modal .tech-badge {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+        }
+
+        #close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 107, 107, 0.3);
+            border: 2px solid #ff6b6b;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        #close-modal:hover {
+            background: rgba(255, 107, 107, 0.6);
+            transform: rotate(90deg);
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00d4ff;
+            font-size: 24px;
+            text-align: center;
+            z-index: 300;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 212, 255, 0.3);
+            border-top: 5px solid #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #interaction-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 212, 255, 0.9);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 150;
+        }
+
+        #interaction-hint.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        <div class="loading-spinner"></div>
+        <p>Chargement de l'univers 3D...</p>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <div id="info-panel">
+        <h1>Virgile Allix</h1>
+        <p><strong>Âge:</strong> 18 ans</p>
+        <p><strong>Formation:</strong> BTS SIO SLAM</p>
+        <p><strong>Entreprise:</strong> MTB111</p>
+        <p style="margin-top: 15px; font-size: 13px; line-height: 1.5;">
+            Passionné par le développement d'applications et la cybersécurité.
+            Spécialisé en Java, web et modélisation 3D.
+        </p>
+        <p style="margin-top: 10px; color: #00d4ff; font-size: 12px;">
+            Explorez l'espace pour découvrir mes projets ! 🎮
+        </p>
+    </div>
+
+    <div id="controls">
+        <h3>Contrôles</h3>
+        <p><span class="key">Z/Q/S/D</span> Déplacement</p>
+        <p><span class="key">SOURIS</span> Regarder autour</p>
+        <p><span class="key">E</span> Interagir avec les projets</p>
+        <p><span class="key">ESPACE</span> Sauter</p>
+    </div>
+
+    <div id="interaction-hint">
+        Appuyez sur <strong>E</strong> pour interagir
+    </div>
+
+    <div id="project-modal">
+        <button id="close-modal">×</button>
+        <div class="category" id="modal-category"></div>
+        <h2 id="modal-title"></h2>
+        <div class="description" id="modal-description"></div>
+        <div class="tech-stack" id="modal-tech"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
